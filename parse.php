@@ -141,8 +141,6 @@ function mysql_get_con($db_name)
         $msg =  "hostname: " . gethostname() . PHP_EOL ;
         $msg .=  "db: " . $db . PHP_EOL ;
         $msg .=  "username: " . $username . PHP_EOL;
-        loginfo($msg);
-        mailer($subj, $msg);
         die($msg);
     }
     mysql_select_db($db_name, $con);

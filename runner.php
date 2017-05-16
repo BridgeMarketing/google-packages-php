@@ -1,12 +1,15 @@
 <?php
 set_time_limit(0);
 
-$start  = 2400000;
-$total  = 4200000;
+$start  = 0;
+//enter actual row count
+$total  = 4200759;
 $step   = 16000;
+
+$path = '/home/ec2-user/google-packages';
 for (;$start < $total; $start  = $start + $step  ){
     $end  = $start + $step;
-    $cmd   = "nohup /usr/bin/php /home/bridgedev/google-packages/parseparams.php $start $end >/home/bridgedev/google-packages/logs/data_{$start}_{$end}.csv &";
+    $cmd   = "nohup /usr/bin/php $path/parseparams.php $start $end >$path/logs/data_{$start}_{$end}.csv &";
     echo $cmd;
     echo PHP_EOL;
     shell_exec($cmd);
