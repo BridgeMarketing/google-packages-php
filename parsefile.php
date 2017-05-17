@@ -5,54 +5,25 @@ define('PREFIX', 'https://play.google.com/store/apps/details?id=');
 error_reporting(E_ERROR);
 
 
-function mysql_get_con($db_name)
-{
 
-    $db = "google-packages.cixjbteelrgv.us-east-1.rds.amazonaws.com";
-    $username = "peter";
-    $password = "gramercy";
-    $con = mysql_pconnect($db, $username, $password);
-    if (!$con) {
-        $subj =  "cannot connect to management db " . $db;
-        $msg =  "hostname: " . gethostname() . PHP_EOL ;
-        $msg .=  "db: " . $db . PHP_EOL ;
-        $msg .=  "username: " . $username . PHP_EOL;
-        die($msg);
-    }
-    //echo "$db_name CONNECT OK!";
-    mysql_select_db($db_name, $con);
-    return $con;
-}
-
-$manage_db_name = 'google_packages';
-$manage_table_name = 'google-packages';
-$mysql_conn = mysql_get_con($manage_db_name);
-
-if(isset($argv[1]) && isset($argv[2]) ){
+if(isset($argv[1])){
     $argument1 = $argv[1];
-    $argument2 = $argv[2];
 }else{
     die("no arguments provided");
 }
 
 //sleep prevents google ban
-sleep ( rand ( 0, 30));
+//sleep ( rand ( 0, 1));
 try {
 
-    $query = "SELECT * FROM `$manage_table_name`  WHERE `id` BETWEEN $argument1 AND $argument2";
-    //$query = "SELECT * FROM `$manage_table_name` WHERE `package`='com.supercell.clashofclans'";
+    $handle = fopen($argument1,'r');
+    while ( ($row = fgetcsv($handle) ) !== FALSE ) {
 
-    $result = mysql_query($query);
 
-    if (!$result) {
-        echo "Could not  run query ($query) " . PHP_EOL . mysql_error();
-        exit;
-    }
 
-    while ($row = mysql_fetch_assoc($result)) {
         sleep ( rand ( 3, 7));
-        $id= $row["id"];
-        $package= $row["package"];
+        $id= $row[0];
+        $package= $row[1];
         $data = get_data($package);
         //echo $data;
         $glue = ',';
@@ -80,6 +51,7 @@ try {
                    $numDownloads = getElementsByClass($metainfoholder[1] , 'div' , 'content' );
                    if($numDownloads && $numDownloads[0]){
                        $downloads = $numDownloads[0]->nodeValue;
+
                        $downloads = trim($downloads);
                        $downloads = str_replace(',', '', $downloads);
                        $downloads = str_replace(' ', '', $downloads);
